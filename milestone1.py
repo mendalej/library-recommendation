@@ -6,6 +6,7 @@ import random
 
 bg_color = "#C3ACD0"
 
+book_history = []
 
 def clear_all(frames):
     for items in frame.winfo_children():
@@ -31,6 +32,11 @@ def fetch_csv():
         all_books = database[random_number]
     return all_books
 
+def recommendation_history(book):
+    book_history.append(book)
+    with open('recommendations.csv', 'a', newline= '') as file:
+        books = csv.writer(file)
+        books.writerow(book)
 
 def load_book1():
     clear_all(frame2)
@@ -93,7 +99,8 @@ def load_book2():
         fg="white",
         font=("TkMenuFont", 14), wraplength=400).pack(pady=20)
     
-    tk.Label(frame2, text =database[idx][1],
+    book_title = database[idx][1]
+    tk.Label(frame2, text =book_title,
         bg=bg_color,
         fg="white",
         font=("TkHeadingFont", 20)).pack(pady=20)
@@ -114,7 +121,12 @@ def load_book2():
         cursor="hand2",
         activebackground="#DFCCFB", 
         activeforeground="black", 
-        command=lambda:load_book1()).pack(pady=20)
+        command=lambda:load_another_book(book_title)).pack(pady=20)
+    
+
+def load_another_book(previous_book):
+    load_book1()
+    recommendation_history([previous_book])
 
     
 
